@@ -1,4 +1,5 @@
 import akka.actor.ActorSystem
+import akka.event.Logging
 import akka.http.scaladsl.Http
 import akka.stream.{ ActorMaterializer, ActorMaterializerSettings }
 import cluster.ClusterStateInformer
@@ -11,7 +12,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 object Main {
 
   def main(args: Array[String]): Unit = {
-    println("Starting containers.....")
     val config: Config = {
       import scala.collection.JavaConverters._
       val seedNodes = ClusterSetup.seedNodes()
@@ -23,14 +23,13 @@ object Main {
         .resolve()
     }
 
-    println(config)
-
     implicit val system: ActorSystem = ActorSystem(ClusterSetup.actorSystemName(), config)
+    val logging = Logging(system, "main")
     implicit val mat = ActorMaterializer(materializerSettings = Some(ActorMaterializerSettings(system)))
     val routes = new Route(system)
     Http().bindAndHandle(routes.routes, "0.0.0.0", 9000).onComplete {
-      case Success(s) => println("Successfully started..")
-      case Failure(f) => println(f)
+      case Success(s) => logging.info("Successfully started")
+      case Failure(f) => logging.error(f, "Server cannot be started!!!!")
     }
 
     system.actorOf(ClusterStateInformer.props(), "cluster-informer")

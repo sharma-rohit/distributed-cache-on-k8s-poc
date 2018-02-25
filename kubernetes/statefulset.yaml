@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
        - name: distributed-cache
-         image: "localhost:5000/distributed-cache:0.2.0"
+         image: "localhost:5000/distributed-cache-on-k8s-poc:1.0"
          env:
            - name: AKKA_ACTOR_SYSTEM_NAME
              value: "distributed-cache-system"
