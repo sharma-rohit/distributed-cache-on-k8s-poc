@@ -1,0 +1,13 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: distributed-cache-ingress
+spec:
+  rules:
+    # DNS name your application should be exposed on
+    - host: "distributed-cache.com"
+      http:
+        paths:
+          - backend:
+              serviceName: distributed-cache-service
+              servicePort: 80

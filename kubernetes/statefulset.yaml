@@ -1,0 +1,37 @@
+apiVersion: "apps/v1beta2"
+kind: StatefulSet
+metadata:
+  name: distributed-cache
+spec:
+  selector:
+    matchLabels:
+      app: distributed-cache
+  serviceName: distributed-cache
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: distributed-cache
+    spec:
+      containers:
+       - name: distributed-cache
+         image: "localhost:5000/distributed-cache:0.2.0"
+         env:
+           - name: AKKA_ACTOR_SYSTEM_NAME
+             value: "distributed-cache-system"
+           - name: AKKA_REMOTING_BIND_PORT
+             value: "2551"
+           - name: POD_NAME
+             valueFrom:
+               fieldRef:
+                 fieldPath: metadata.name
+           - name: AKKA_REMOTING_BIND_DOMAIN
+             value: "distributed-cache.default.svc.cluster.local"
+           - name: AKKA_SEED_NODES
+             value: "distributed-cache-0.distributed-cache.default.svc.cluster.local:2551,distributed-cache-1.distributed-cache.default.svc.cluster.local:2551,distributed-cache-2.distributed-cache.default.svc.cluster.local:2551"
+         ports:
+          - containerPort: 2551
+         readinessProbe:
+          httpGet:
+            port: 9000
+            path: /health

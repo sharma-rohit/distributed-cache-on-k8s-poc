@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: distributed-cache
+  name: distributed-cache-service
+spec:
+  selector:
+    app: distributed-cache
+  type: ClusterIP
+  ports:
+    - port: 80
+      protocol: TCP
+      # this needs to match your container port
+      targetPort: 9000

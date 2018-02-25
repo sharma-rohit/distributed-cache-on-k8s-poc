@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: distributed-cache
+  labels:
+    app: distributed-cache
+spec:
+  clusterIP: None
+  selector:
+    app: distributed-cache
+  ports:
+    - port: 2551
+      targetPort: 2551
+      protocol: TCP
