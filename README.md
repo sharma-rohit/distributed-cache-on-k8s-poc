@@ -36,5 +36,8 @@
 9. To redirect traffic from the domain "distributed-cache.com" stated in ingress.yaml to our minikube cluster run:
 
     `echo "$(minikube ip) distributed-cache.com" | sudo tee -a /etc/hosts`
-    
+ 
+Check if it's working:
+
+`curl -v distributed-cache.com/cache-data/2055e73f-7db8-49ce-9eb6-3f9d80525284`    
 
